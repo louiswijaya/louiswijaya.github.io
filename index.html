@@ -22,7 +22,7 @@
     zoom: 14,
     maxBounds: bounds
     });
- downloadUrl('/marker.php', function(data) {
+ downloadUrl('louiswijaya.github.io/marker.php', function(data) {
             var xml = data.responseXML;
             var markers = xml.documentElement.getElementsByTagName('markers');
             Array.prototype.forEach.call(markers, function(markerElem) {
