@@ -1,0 +1,109 @@
+<html>
+<head>
+    <title>Warkit</title>
+    <style>
+    body {
+    background-image: url('bg.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    }
+    </style>
+    <meta charset="utf-8" />
+<script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=[ArUl5leE_XdP3BFj7dIT4_owx3zKkwdwz5MVtptop-FkejMfBU6IYHVZ1-FtgMHb]' async defer></script>
+    <script type='text/javascript'>
+    function GetMap()
+    {
+        var bounds = Microsoft.Maps.LocationRect.fromLocations(new Microsoft.Maps.Location(3.6372602, 98.5821729), new Microsoft.Maps.Location(3.5626258, 98.6260153));
+    var map = new Microsoft.Maps.Map('#myMap', {
+    credentials: 'ArUl5leE_XdP3BFj7dIT4_owx3zKkwdwz5MVtptop-FkejMfBU6IYHVZ1-FtgMHb',
+    center: new Microsoft.Maps.Location(3.5778706,98.6170252),
+    mapTypeId: Microsoft.Maps.MapTypeId.road,
+    zoom: 14,
+    maxBounds: bounds
+    });
+ downloadUrl('/marker.php', function(data) {
+            var xml = data.responseXML;
+            var markers = xml.documentElement.getElementsByTagName('markers');
+            Array.prototype.forEach.call(markers, function(markerElem) {
+              var id = markerElem.getAttribute('id');
+              var name = markerElem.getAttribute('name');
+              var address = markerElem.getAttribute('address');
+              var telp =markerElem.getAttribute('telp');
+              var jam =markerElem.getAttribute('jam_buka')
+              var type = markerElem.getAttribute('type');
+              var point = new Microsoft.Maps.Location(
+                  parseFloat(markerElem.getAttribute('lat')),
+                  parseFloat(markerElem.getAttribute('lng')));
+              var infobox = new Microsoft.Maps.Infobox;
+              var infowincontent = document.createElement('div');
+              var strong = document.createElement('strong');
+              strong.textContent = name
+              infowincontent.appendChild(strong);
+              infowincontent.appendChild(document.createElement('br'));
+              
+              var text = document.createElement('text');
+              text.textContent = address
+              infowincontent.appendChild(text);
+              var marker = new Microsoft.Maps.Pushpin(point);
+              Microsoft.Maps.Events.addHandler(marker, 'mouseover', displayInfobox);
+              Microsoft.Maps.Events.addHandler(marker, 'mouseout', closeInfobox);
+              Microsoft.Maps.Events.addHandler(infobox, 'mouseleave', closeInfobox);
+               map.entities.push(marker);
+        function displayInfobox(e) {
+            var pin = e.target;
+             infobox.setLocation(pin.getLocation());
+             pin.description = 'alamat:' + address + '<br>' + 'telp: ' + telp + '<br>' + 'jam buka: ' + jam +'<br>' + 'Jenis rumah makan:'+ type;
+            infobox.setOptions({
+                title: name,
+                description: pin.description,
+                visible: true
+            });
+            infobox.setMap(map);
+    }
+        function closeInfobox() {
+        infobox.setOptions({ visible: false });
+    }
+            });
+            
+          });
+          map.setOptions({
+    maxZoom: 15,
+    minZoom: 14
+});
+        }
+        function downloadUrl(url, callback) {
+        var request = window.ActiveXObject ?
+            new ActiveXObject('Microsoft.XMLHTTP') :
+            new XMLHttpRequest;
+
+ request.onreadystatechange = function() {
+          if (request.readyState == 4) {
+            request.onreadystatechange = doNothing;
+            callback(request, request.status);
+          }
+        };
+
+        request.open('GET', url, true);
+        request.send(null);
+      }
+
+      function doNothing() {}
+    </script>
+</head>
+<body>
+    <center>
+        <table width=100%>
+            <tr>
+                <td align=center style="border-bottom: 1px solid white"><font color="white" size=10px><b>W A R K I T</b></font></td>
+            </tr>
+            <tr>
+                <td align=center><font color="white" size=5px>Warung Kita</font></td>
+            </tr>
+        </table>
+        
+        
+    <div id="myMap" style="position:relative;width:100%;height:500px;"></div>
+    </center>
+</body>
+</html>
